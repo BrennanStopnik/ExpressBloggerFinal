@@ -10,7 +10,7 @@ var usersRouter = require('./routes/users');
 var blogsRouter = require('./routes/blogs');
 
 var { mongoConnect } = require('./mongo.js');
-				mongoConnect();
+mongoConnect();
 
 var app = express();
 
