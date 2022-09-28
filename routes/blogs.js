@@ -7,7 +7,7 @@ const {db} = require("../mongo")
 // var { validateBlogData } = require('../validation/blogs')
 
 
-router.get('/get-one-example', async function(req, res, next) {
+router.get('/get-one-example', async (req, res, next) => {
     try{
         const blogPost = await db().collection("posts").findOne({
             id: {
@@ -19,7 +19,7 @@ router.get('/get-one-example', async function(req, res, next) {
             post: blogPost
         })
     } catch (err) {
-        console.log(err.name)
+        console.log(err)
         res.json({
             success: false,
             error: err.toString()
@@ -42,7 +42,7 @@ router.get('/get-one/:id', async (req, res, next) => {
         })
     
     } catch (err) {
-        console.log(err.name)
+        console.log(err)
         res.json({
             success: false,
             error: err.toString()
@@ -73,6 +73,44 @@ router.post('/create-one', async (req, res, next) => {
             lastModified: new Date()
         }
 
+        const blogDataCheck = validateBlogData(blogData)
+
+        if (blogDataCheck.isValid === false) {
+            res.json({
+                success: false,
+                message: blogDataCheck.message
+            })
+            return;
+        }
+
+        const blogPost = await db().collection("posts").insert(blogData)
+
+        res.json({
+            success: true,
+            post: blogPost
+        })
+
+    } catch (err) {
+        console.log(err)
+        res.json({
+            success: false,
+            error: err.toString()
+        })
+    }
+})
+
+
+router.put('/update-one/:id', async (req, res, next) => {
+    try{
+        const id = req.params.id
+        // const title = req.body.title
+		// const text = req.body.text
+		// const author = req.body.author
+		// const email = req.body.email
+		// const categories = req.body.categories
+		const starRating = req.body.starRating
+        const lastModified = new Date()
+
         // const blogDataCheck = validateBlogData(blogData)
 
         // if (blogDataCheck.isValid === false) {
@@ -83,21 +121,42 @@ router.post('/create-one', async (req, res, next) => {
         //     return;
         // }
 
-        const blogPost = await db().collection("posts").insert(blogData)
-
+        const blogPost = await db().collection("posts").update({id:id}, {$set: {"starRating": starRating, "lastModified": lastModified}})
+        
+        
         res.json({
             success: true,
             post: blogPost
         })
 
     } catch (err) {
-        console.log(err.name)
+        console.log(err)
         res.json({
             success: false,
             error: err.toString()
         })
     }
-
 })
+
+
+// router.delete('delete-one/:id', async (req, res, next) => {
+//     try{
+//         const blogId = req.params.id
+
+//         const
+
+
+
+//     } catch (err) {
+//         console.log(err)
+//         res.json({
+//             success: false,
+//             error: err.toString()
+//         })
+//     }
+// })
+
+
+
 
 module.exports = router;
