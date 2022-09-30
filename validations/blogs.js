@@ -10,8 +10,10 @@
 
 */
 
-
+// This will validate all the info for the "post '/create-one'" on the routes page
 const validateBlogData = (blogData) => {
+    
+    // Validates whether title is defined, makes sure it's a string and under 30 char. Returns false if valitaion fails and gives explanation.
     if (blogData.title === undefined || typeof(blogData.title) !== "string" || blogData.title.length > 30) {
         return {
             success: false,
@@ -19,6 +21,7 @@ const validateBlogData = (blogData) => {
         }
     }
 
+    // Validates whether text is defined and makes sure it's a string. Returns false if valitaion fails and gives explanation
     if (blogData.text === undefined || typeof(blogData.text) !== "string") {
         return { 
             success: false,
@@ -26,14 +29,36 @@ const validateBlogData = (blogData) => {
         }
     }
 
+    // Validates whether author is defined, makes sure it's a string and under 30 char. Returns false if valitaion fails and gives explanation.
     if (blogData.author === undefined || typeof(blogData) !== "string") {
         return {
             success: false,
             message: "Author is a required field and must be a string."
         }
     }
-
     
+    // Vaildates whether email is defined, makes sure it's a string and that it has a "@" in it. Returns false if validation fails and gives explanation.
+    if (blogData.email !== undefined) {
+        if (typeof(blogData.email) !== "string") {
+            return {
+                success: false,
+                message: "Email must be a string."
+            }
+        }
+        if (blogData.email.includes('@') === false) {
+            return {
+                success: false,
+                message: "Email must contain @ to be valid"
+            }
+        }
+    }
+
+    // 
+
+    return {
+        success: true,
+    }
+
 }
 
 
