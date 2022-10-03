@@ -217,5 +217,45 @@ router.delete('/delete-one/:id', async (req, res, next) => {
     }
 });
 
+router.get("/get-multi", async function (req, res) {
+    const sortField = req.query.sortField;
+    const sortOrder = Number(req.query.sortOrder);
+    const limit = Number(req.query.limit);
+    const page = Number(req.query.page);
+  
+    console.log(sortField, typeof sortField);
+    console.log(sortOrder, typeof sortOrder);
+    console.log(limit, typeof limit);
+    console.log(page, typeof page);
+  
+    const skip = limit * (page - 1);
+    console.log(skip);
+  
+      const sortObject = {}
+      sortObject[sortField] = sortOrder
+  
+    const blogs = await db().collection("posts").find({}).sort(sortObject).limit(limit).skip(skip).toArray()
+    res.json({
+          success: true,
+          blogs
+      });
+  });
+  
+router.delete('/delete-multi', async function (req, res) {
+    const idsToDelete = req.body
+
+    const deleteResult = await db().collection("posts").deleteMany({
+        id: {
+            $in: idsToDelete
+        }
+    })
+
+    res.json({
+        success: true,
+        deleteResult: deleteResult
+    })
+})
+  
+
 
 module.exports = router;
